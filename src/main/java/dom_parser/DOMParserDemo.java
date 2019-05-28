@@ -59,10 +59,10 @@ public class DOMParserDemo {
 
                     if (eventChildNode.getNodeName().equalsIgnoreCase("event_id")) {
 
-                        event.setEventId(eventChildNode.getNodeName() + " = " + eventChildNode.getTextContent());
+                        event.setEventId(eventChildNode.getTextContent());
 
                     } else  if (eventChildNode.getNodeName().equalsIgnoreCase("eventDate")) {
-                        event.setEventDate(eventChildNode.getNodeName() + " = " + eventChildNode.getTextContent());
+                        event.setEventDate(eventChildNode.getTextContent());
 
                     } else  if (eventChildNode.getNodeName().equalsIgnoreCase("event_parameters")) {
 
@@ -76,13 +76,13 @@ public class DOMParserDemo {
                             String value = eventParamNode.getTextContent();
 
                             if (name.equalsIgnoreCase("priority")) {
-                                ep.setPriority(name + " = " + value);
+                                ep.setPriority(value);
 
                             } else if (name.equalsIgnoreCase("log_level")) {
-                                ep.setLogLevel(name + " = " + value);
+                                ep.setLogLevel(value);
 
                             } else if (name.equalsIgnoreCase("source")) {
-                                ep.setSource(name + " = " + value);
+                                ep.setSource(value);
                             }
                         }
                     }
