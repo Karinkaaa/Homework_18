@@ -12,11 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DOMParserDemo {
-
-    private static final String ANSI_GREEN = "\u001B[32m";
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_WHITE = "\u001B[37m";
-
     public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException {
 
         /* создать класс Event, EventParameters, преобразовать указанный XML в List<Event> */
@@ -26,12 +21,13 @@ public class DOMParserDemo {
 
         InputStream is = DOMParserDemo.class.getClassLoader().getResourceAsStream("data.xml");
         Document document = builder.parse(is);
+        document.normalizeDocument();
         Element rootElement = document.getDocumentElement();
 
-        //System.out.println(" *** XML-file ***\n\n");
-        //printAllXmlNodes(rootElement.getChildNodes(), "\t");
+        System.out.println(" *** XML-file ***\n");
+        printAllXmlNodes(rootElement, "\t");
 
-        System.out.println("\n\n *** LIST ***");
+        System.out.println("\n\n *** LIST ***\n");
         List<Event> eventsList = getListOfXmlNodes(rootElement.getChildNodes());
 
         for (Event event : eventsList)
@@ -58,13 +54,12 @@ public class DOMParserDemo {
                     Node eventChildNode = childNodes.item(k);
 
                     if (eventChildNode.getNodeName().equalsIgnoreCase("event_id")) {
-
                         event.setEventId(eventChildNode.getTextContent());
 
-                    } else  if (eventChildNode.getNodeName().equalsIgnoreCase("eventDate")) {
+                    } else if (eventChildNode.getNodeName().equalsIgnoreCase("eventDate")) {
                         event.setEventDate(eventChildNode.getTextContent());
 
-                    } else  if (eventChildNode.getNodeName().equalsIgnoreCase("event_parameters")) {
+                    } else if (eventChildNode.getNodeName().equalsIgnoreCase("event_parameters")) {
 
                         NodeList nodeList = eventChildNode.getChildNodes();
                         EventParameters ep = event.getEventParameters();
@@ -93,30 +88,16 @@ public class DOMParserDemo {
         return list;
     }
 
-    private static void printAllXmlNodes(NodeList childs, String prefix) {
+    private static void printAllXmlNodes(Node rootNode, String prefix) {
 
-        for (int i = 0; i < childs.getLength(); i++) {
+        if (rootNode instanceof Element) {
 
-            Node node = childs.item(i);
+            System.out.println(prefix + "<" + rootNode.getNodeName() + ">");
 
-            if (node instanceof Element && node.hasAttributes()) {
+            for (int i = 0; i < rootNode.getChildNodes().getLength(); i++)
+                printAllXmlNodes(rootNode.getChildNodes().item(i), prefix + "\t");
 
-                System.out.print(ANSI_YELLOW + prefix + "<" + node.getNodeName());
-                NamedNodeMap attributes = node.getAttributes();
-
-                for (int j = 0; j < attributes.getLength(); j++) {
-
-                    Node attributeNode = attributes.item(j);
-                    System.out.print(" " + ANSI_WHITE + attributeNode.getNodeName() + "=\"" + ANSI_GREEN +
-                            attributeNode.getNodeValue() + "\"");
-                }
-                System.out.println(ANSI_YELLOW + "/>");
-
-            } else if (node instanceof Element) {
-                System.out.println(prefix + "<" + node.getNodeName() + ">");
-            }
-
-            printAllXmlNodes(node.getChildNodes(), prefix + "\t");
+            System.out.println(prefix + "</" + rootNode.getNodeName() + ">");
         }
     }
 }
