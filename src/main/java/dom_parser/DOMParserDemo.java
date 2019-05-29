@@ -21,7 +21,6 @@ public class DOMParserDemo {
 
         InputStream is = DOMParserDemo.class.getClassLoader().getResourceAsStream("data.xml");
         Document document = builder.parse(is);
-        document.normalizeDocument();
         Element rootElement = document.getDocumentElement();
 
         System.out.println(" *** XML-file ***\n");
